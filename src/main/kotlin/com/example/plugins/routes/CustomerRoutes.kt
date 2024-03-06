@@ -1,6 +1,7 @@
 package com.example.plugins.routes
 
 import com.example.plugins.model.Customer
+import com.example.plugins.model.customerStorage
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -8,9 +9,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.customerRouting() {
-    val customerStorage = mutableListOf(
-        Customer("3", "Harsh", "Panchal", "harsh@gmail.com")
-    )
 
     route("/customer") {
         get {
@@ -28,13 +26,19 @@ fun Route.customerRouting() {
                 "No customer id with $id",
                 status = HttpStatusCode.NotFound
             )
-            call.respond(customer)
+            call.respondText(customer.firstName)
+            call.respond(customer.toString())
         }
 
         post {
-            val customer = call.receive<Customer>() // deserialize the JSON request body into a Customer object
-            customerStorage.add(customer)
-            call.respondText("Customer stored successfully", status = HttpStatusCode.Created)
+            try {
+                val customer = call.receive<Customer>() // deserialize the JSON request body into a Customer object
+                customerStorage.add(customer)
+                call.respondText("Customer stored successfully", status = HttpStatusCode.Created)
+            } catch (e: ContentTransformationException) {
+                call.respondText("Invalid request data", status = HttpStatusCode.BadRequest)
+                application.log.error("Error deserializing customer data: ${e.message}")
+            }
         }
 
         delete("{id?}") {
