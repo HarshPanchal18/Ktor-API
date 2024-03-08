@@ -11,7 +11,6 @@ fun main() {
         port = 8080,
         host = "127.0.0.1",
         module = Application::module,
-        //watchPaths = listOf("com/example")
     ).start(wait = true)
 }
 

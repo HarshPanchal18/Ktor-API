@@ -26,8 +26,7 @@ fun Route.customerRouting() {
                 "No customer id with $id",
                 status = HttpStatusCode.NotFound
             )
-            call.respondText(customer.firstName)
-            call.respond(customer.toString())
+            call.respond(customer)
         }
 
         post {
