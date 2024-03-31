@@ -1,6 +1,5 @@
 package com.example.plugins
 
-import com.example.plugins.routes.customerRouting
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.response.respondText
@@ -21,6 +20,5 @@ fun Application.configureRouting() {
             call.parameters["id"]?.let { value -> call.respondText(value) }
         }
 
-        customerRouting()
     }
 }
