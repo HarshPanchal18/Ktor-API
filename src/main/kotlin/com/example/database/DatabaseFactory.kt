@@ -2,12 +2,19 @@ package com.example.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
 
 	fun init() {
 		Database.connect(hikari())
+		transaction {
+			SchemaUtils.create(UserTable) // create table only if it does not exist
+		}
 	}
 
 	private fun hikari(): HikariDataSource {
@@ -22,4 +29,7 @@ object DatabaseFactory {
 		return HikariDataSource(config)
 	}
 
+	suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
+		transaction { block() }
+	}
 }
