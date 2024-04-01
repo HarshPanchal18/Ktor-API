@@ -2,21 +2,33 @@ package com.example
 
 import com.example.database.DatabaseFactory
 import com.example.plugins.*
-import io.ktor.server.application.Application
+import com.example.repository.UserRepository
+import com.example.repository.UserRepositoryImpl
+import com.example.service.UserService
+import com.example.service.UserServiceImpl
+import io.ktor.serialization.gson.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.*
 
 fun main() {
-    embeddedServer(
-        Netty,
-        port = 8080,
-        host = "127.0.0.1",
-        module = Application::module,
-    ).start(wait = true)
+	embeddedServer(
+		Netty,
+		port = 8080,
+		host = "127.0.0.1",
+		module = Application::module,
+	).start(wait = true)
 }
 
 fun Application.module() {
-    DatabaseFactory.init()
-    configureRouting()
-    configureSerialization()
+	DatabaseFactory.init()
+	configureSerialization()
+
+	//configureRouting()
+
+	val userService: UserService = UserServiceImpl()
+	val userRepository = UserRepositoryImpl(userService)
+
+	configureAuthRoutes(userRepository)
 }
