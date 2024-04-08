@@ -20,7 +20,9 @@ object DatabaseFactory {
 	private fun hikari(): HikariDataSource {
 		val config = HikariConfig().apply {
 			driverClassName = "org.postgresql.Driver"
-			jdbcUrl = "jdbc:postgresql:mystoryapp?user=Harsh&password=Harsh"
+			username = "Harsh"
+			password = "Harsh"
+			jdbcUrl = "jdbc:postgresql:mystoryapp"
 			maximumPoolSize = 3
 			isAutoCommit = false
 			transactionIsolation = "TRANSACTION_REPEATABLE_READ"

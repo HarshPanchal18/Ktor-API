@@ -2,14 +2,15 @@ package com.example.plugins
 
 import com.example.repository.UserRepository
 import com.example.service.CreateUserParams
-import com.example.utils.BaseResponse
 import io.ktor.http.*
-import io.ktor.server.application.Application
-import io.ktor.server.application.call
+import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.Identity.decode
 import io.ktor.util.reflect.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
 
 fun Application.configureRouting() {
 	routing {
@@ -33,9 +34,19 @@ fun Application.configureAuthRoutes(userRepository: UserRepository) {
 	routing {
 		route("/auth") {
 			post("/register") {
-				val params = call.receive<CreateUserParams>()
-				val result = userRepository.registerUser(params = params)
-				call.respond(message = result)
+				val createUserParams = CreateUserParams(
+					fullName = "John Doe",
+					email = "john.doe@exammple.com",
+					password = "password123",
+					avatar = "https://example.com/avatar.jpg"
+				)
+
+				//val json = Json { prettyPrint = true }
+				//val jsonString = json.encodeToJsonElement(CreateUserParams.serializer(), createUserParams)
+				//println(jsonString)
+				//val params = call.receive<CreateUserParams>()
+				val result = userRepository.registerUser(params = createUserParams)
+				call.respond(status = result.statusCode, message = result)
 			}
 		}
 	}

@@ -2,7 +2,7 @@ package com.example.service
 
 import kotlinx.serialization.Serializable
 
-//@Serializable
+@Serializable
 data class CreateUserParams(
 	val fullName: String,
 	val email: String,
