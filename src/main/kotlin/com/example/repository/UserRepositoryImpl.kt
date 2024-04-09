@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.example.security.JwtConfig
 import com.example.service.CreateUserParams
 import com.example.service.UserService
 import com.example.utils.BaseResponse
@@ -14,16 +15,13 @@ class UserRepositoryImpl(
 		} else {
 			val user = userService.registerUser(params)
 			if (user != null) {
-				// @TODO() Generate authentication tokens for the user
+				val token = JwtConfig.instance.createAccessToken(user.id)
+				user.authToken = token
 				BaseResponse.Success(data = user)
 			} else {
 				BaseResponse.ErrorResponse()
 			}
 		}
-	}
-
-	override suspend fun loginUser(email: String, password: String): BaseResponse<Any> {
-		TODO("Not yet implemented")
 	}
 
 	private suspend fun isEmailExists(email: String): Boolean {
