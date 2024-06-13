@@ -2,6 +2,7 @@ package com.example
 
 import com.example.database.DatabaseFactory
 import com.example.plugins.configureAuthRoutes
+import com.example.plugins.configureRouting
 import com.example.plugins.configureSerialization
 import com.example.repository.UserRepositoryImpl
 import com.example.security.configSecurity
@@ -27,7 +28,7 @@ fun Application.module() {
 	DatabaseFactory.init()
 	configureSerialization()
 
-	//configureRouting()
+	configureRouting()
 
 	configSecurity()
 
@@ -36,11 +37,11 @@ fun Application.module() {
 
 	configureAuthRoutes(userRepository)
 
-	routing {
+	/*routing {
 		authenticate {
 			get("/testurl") {
 				call.respond("Working fine")
 			}
 		}
-	}
+	}*/
 }
